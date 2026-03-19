@@ -211,7 +211,7 @@ export const CHART_COLORS = [
   '#ffec16',
 ];
 
-export const DOMAIN_REGEX = /.*/;
+export const DOMAIN_REGEX = /^[a-zA-Z0-9\-._~:/?#[\]@!$&'()*+,;=%]+$/;
 export const SHARE_ID_REGEX = /^[a-zA-Z0-9]{8,50}$/;
 export const DATETIME_REGEX =
   /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]{3}(Z|\+[0-9]{2}:[0-9]{2})?)?$/;
