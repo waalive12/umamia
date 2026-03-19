@@ -130,7 +130,7 @@ export async function POST(request: Request) {
     const createdAt = timestamp ? new Date(timestamp * 1000) : new Date();
     const now = Math.floor(Date.now() / 1000);
 
-    const sessionSalt = hash(startOfMonth(createdAt).toUTCString());
+    const sessionSalt = hash(startOfHour(createdAt).toUTCString());
     const visitSalt = hash(startOfHour(createdAt).toUTCString());
 
     const sessionId = id ? uuid(sourceId, id) : uuid(sourceId, ip, sessionSalt);
@@ -158,8 +158,8 @@ export async function POST(request: Request) {
     let visitId = cache?.visitId || uuid(sessionId, visitSalt);
     let iat = cache?.iat || now;
 
-    // Expire visit after 30 minutes
-    if (!timestamp && now - iat > 1800) {
+    // Expire visit after 1 hour
+    if (!timestamp && now - iat > 3600) {
       visitId = uuid(sessionId, visitSalt);
       iat = now;
     }
