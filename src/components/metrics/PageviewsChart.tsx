@@ -32,7 +32,7 @@ export function PageviewsChart({ data, unit, minDate, maxDate, ...props }: Pagev
       datasets: [
         {
           type: 'bar',
-          label: formatMessage(labels.visitors),
+          label: formatMessage(labels.uniqueVisitors),
           data: generateTimeSeries(data.sessions, minDate, maxDate, unit, dateLocale),
           borderWidth: 1,
           barPercentage: 0.9,
@@ -69,7 +69,7 @@ export function PageviewsChart({ data, unit, minDate, maxDate, ...props }: Pagev
               },
               {
                 type: 'line',
-                label: `${formatMessage(labels.visitors)} (${formatMessage(labels.previous)})`,
+                label: `${formatMessage(labels.uniqueVisitors)} (${formatMessage(labels.previous)})`,
                 data: generateTimeSeries(data.compare.sessions, minDate, maxDate, unit, dateLocale),
                 borderWidth: 2,
                 backgroundColor: '#f15bb5',

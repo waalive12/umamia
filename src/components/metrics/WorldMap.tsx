@@ -25,7 +25,7 @@ export function WorldMap({ websiteId, data, ...props }: WorldMapProps) {
   const { locale } = useLocale();
   const { formatMessage, labels } = useMessages();
   const { countryNames } = useCountryNames(locale);
-  const visitorsLabel = formatMessage(labels.visitors).toLocaleLowerCase(locale);
+  const visitorsLabel = formatMessage(labels.uniqueVisitors).toLocaleLowerCase(locale);
   const unknownLabel = formatMessage(labels.unknown);
 
   const { data: mapData } = useWebsiteMetricsQuery(websiteId, {

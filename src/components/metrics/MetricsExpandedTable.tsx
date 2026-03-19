@@ -81,7 +81,7 @@ export function MetricsExpandedTable({
               </DataColumn>
               <DataColumn
                 id="visitors"
-                label={formatMessage(labels.visitors)}
+                label={formatMessage(labels.uniqueVisitors)}
                 align="end"
                 width="120px"
               >

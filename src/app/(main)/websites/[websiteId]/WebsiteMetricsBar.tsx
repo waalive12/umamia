@@ -22,7 +22,7 @@ export function WebsiteMetricsBar({
     ? [
         {
           value: visitors,
-          label: formatMessage(labels.visitors),
+          label: formatMessage(labels.uniqueVisitors),
           change: visitors - comparison.visitors,
           formatValue: formatLongNumber,
         },

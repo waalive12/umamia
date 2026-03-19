@@ -133,7 +133,8 @@ export async function POST(request: Request) {
     const sessionSalt = hash(startOfMonth(createdAt).toUTCString());
     const visitSalt = hash(startOfHour(createdAt).toUTCString());
 
-    const sessionId = id ? uuid(sourceId, id) : uuid(sourceId, ip, userAgent, sessionSalt);
+    const sessionId = id ? uuid(sourceId, id) : uuid(sourceId, ip, sessionSalt);
+    const distinctId = id || ip;
 
     // Create a session if not found
     if (!clickhouse.enabled && !cache?.sessionId) {
@@ -148,7 +149,7 @@ export async function POST(request: Request) {
         country,
         region,
         city,
-        distinctId: id,
+        distinctId,
         createdAt,
       });
     }
@@ -228,7 +229,7 @@ export async function POST(request: Request) {
         referrerDomain,
 
         // Session
-        distinctId: id,
+        distinctId,
         browser,
         os,
         device,
@@ -264,7 +265,7 @@ export async function POST(request: Request) {
           websiteId,
           sessionId,
           sessionData: data,
-          distinctId: id,
+          distinctId,
           createdAt,
         });
       }
