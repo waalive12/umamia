@@ -1,8 +1,8 @@
-import { DataColumn, DataTable, type DataTableProps, Icon } from '@umami/react-zen';
+import { DataColumn, DataTable, type DataTableProps, Icon, Button, useToast } from '@umami/react-zen';
 import type { ReactNode } from 'react';
 import { LinkButton } from '@/components/common/LinkButton';
-import { useMessages, useNavigation, useApi } from '@/components/hooks';
-import { SquarePen } from '@/components/icons';
+import { useMessages, useNavigation, useApi, useConfig } from '@/components/hooks';
+import { SquarePen, Copy } from 'lucide-react';
 import { formatLongNumber, formatShortTime } from '@/lib/format';
 
 export interface WebsitesTableProps extends DataTableProps {
@@ -22,19 +22,22 @@ export function WebsitesTable({ showActions, renderLink, ...props }: WebsitesTab
         {renderLink}
       </DataColumn>
       <DataColumn id="domain" label={formatMessage(labels.domain)} />
-      <DataColumn id="visitors" label={formatMessage(labels.uniqueVisitors)}>
+      <DataColumn id="trackingCode" label={formatMessage(labels.trackingCode)} width="120px">
+        {(row: any) => <CopyTrackingCodeButton websiteId={row.id} />}
+      </DataColumn>
+      <DataColumn id="visitors" label={formatMessage(labels.uniqueVisitors)} align="end" width="100px">
         {(row: any) => <WebsiteStats websiteId={row.id} type="visitors" />}
       </DataColumn>
-      <DataColumn id="visits" label={formatMessage(labels.visits)}>
+      <DataColumn id="visits" label={formatMessage(labels.visits)} align="end" width="100px">
         {(row: any) => <WebsiteStats websiteId={row.id} type="visits" />}
       </DataColumn>
-      <DataColumn id="views" label={formatMessage(labels.views)}>
+      <DataColumn id="views" label={formatMessage(labels.views)} align="end" width="100px">
         {(row: any) => <WebsiteStats websiteId={row.id} type="views" />}
       </DataColumn>
-      <DataColumn id="bounceRate" label={formatMessage(labels.bounceRate)}>
+      <DataColumn id="bounceRate" label={formatMessage(labels.bounceRate)} align="end" width="80px">
         {(row: any) => <WebsiteStats websiteId={row.id} type="bounceRate" />}
       </DataColumn>
-      <DataColumn id="visitDuration" label={formatMessage(labels.visitDuration)}>
+      <DataColumn id="visitDuration" label={formatMessage(labels.visitDuration)} align="end" width="120px">
         {(row: any) => <WebsiteStats websiteId={row.id} type="visitDuration" />}
       </DataColumn>
       {showActions && (
@@ -55,6 +58,40 @@ export function WebsitesTable({ showActions, renderLink, ...props }: WebsitesTab
     </DataTable>
   );
 }
+
+const CopyTrackingCodeButton = ({ websiteId }: { websiteId: string }) => {
+  const { formatMessage, labels } = useMessages();
+  const config = useConfig();
+  const { toast } = useToast();
+
+  const handleCopy = () => {
+    const trackerScriptName =
+      config?.trackerScriptName?.split(',')?.map((n: string) => n.trim())?.[0] || 'script.js';
+
+    const getUrl = () => {
+      if (config?.cloudMode) {
+        return `${process.env.cloudUrl}/${trackerScriptName}`;
+      }
+
+      return `${window?.location?.origin || ''}${process.env.basePath || ''}/${trackerScriptName}`;
+    };
+
+    const url = trackerScriptName?.startsWith('http') ? trackerScriptName : getUrl();
+    const code = `<script defer src="${url}" data-website-id="${websiteId}"></script>`;
+
+    navigator.clipboard.writeText(code);
+    toast(formatMessage(labels.copied));
+  };
+
+  return (
+    <Button variant="quiet" onPress={handleCopy} style={{ fontSize: '12px' }}>
+      <Icon>
+        <Copy />
+      </Icon>
+      {formatMessage(labels.copy)}
+    </Button>
+  );
+};
 
 const WebsiteStats = ({ websiteId, type }: { websiteId: string; type: string }) => {
   const { get, useQuery } = useApi();

@@ -130,7 +130,8 @@ export async function POST(request: Request) {
     const createdAt = timestamp ? new Date(timestamp * 1000) : new Date();
     const now = Math.floor(Date.now() / 1000);
 
-    const sessionSalt = hash(startOfHour(createdAt).toUTCString());
+    //const sessionSalt = hash(startOfHour(createdAt).toUTCString()); //一小时记录
+    const sessionSalt = hash(sourceId); //永久唯一
     const visitSalt = hash(startOfHour(createdAt).toUTCString());
 
     const sessionId = id ? uuid(sourceId, id) : uuid(sourceId, ip, sessionSalt);
